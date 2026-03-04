@@ -3,13 +3,23 @@ const string  pluginIcon  = Icons::Heartbeat;
 Meta::Plugin@ pluginMeta  = Meta::ExecutingPlugin();
 const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
 
-ExtraMenuBar::Item@[] items;
-ExtraMenuBar::Menu@   mainMenu;
+ExtraMenuBar::Text     fps;
+ExtraMenuBar::Item@[]  items;
+ExtraMenuBar::Menu     mainMenu(pluginColor + pluginIcon + "\\$G Openplanet");
+ExtraMenuBar::Checkbox mainMenuFps("FPS");
+bool                   shown = true;
 
 void Main() {
-    @mainMenu = ExtraMenuBar::Menu(pluginColor + pluginIcon + "\\$G Openplanet");
+    OnSettingsChanged();
 
+    mainMenu.InsertLast(mainMenuFps);
     items.InsertLast(mainMenu);
+
+    items.InsertLast(fps);
+}
+
+void OnSettingsChanged() {
+    fps.enabled = mainMenuFps.state = S_FPS;
 }
 
 void Render() {
@@ -24,8 +34,11 @@ void Render() {
             and UI::IsOverlayShown()
         )
     ) {
+        shown = false;
         return;
     }
+
+    shown = true;
 
     const float scale = UI::GetScale();
 
@@ -53,8 +66,15 @@ void Render() {
     UI::PushStyleVar(UI::StyleVar::WindowRounding, 0.0f);
 
     if (UI::Begin(pluginTitle + "###main-" + pluginMeta.ID, S_Enabled, flags)) {
-        RenderWindow();
+        UI::BeginMenuBar();
+
+        for (uint i = 0; i < items.Length; i++) {
+            items[i].RenderIfEnabled();
+        }
+
+        UI::EndMenuBar();
     }
+
     UI::End();
 
     UI::PopStyleVar();
@@ -68,15 +88,10 @@ void RenderMenu() {
 }
 
 void Update(float) {
-    ;
-}
-
-void RenderWindow() {
-    UI::BeginMenuBar();
-
-    for (uint i = 0; i < items.Length; i++) {
-        items[i].Render();
+    if (!shown) {
+        return;
     }
 
-    UI::EndMenuBar();
+    S_FPS = fps.enabled = mainMenuFps.state;
+    fps.UpdateLabel(int(Math::Round(GetApp().Viewport.AverageFps)) + " FPS");
 }

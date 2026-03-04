@@ -10,6 +10,8 @@ namespace ExtraMenuBar {
     }
 
     shared abstract class Item {
+        bool enabled = true;
+
         private string _id = "###" + RandomString(16);
         string get_id() final { return _id; }
 
@@ -21,6 +23,12 @@ namespace ExtraMenuBar {
         }
 
         void Render() { }
+
+        void RenderIfEnabled() final {
+            if (enabled) {
+                Render();
+            }
+        }
 
         void UpdateLabel(const string&in new = "") final {
             if (new.Contains("##")) {
@@ -207,7 +215,7 @@ namespace ExtraMenuBar {
         }
 
         void Render() override {
-            UI::Text(label);
+            UI::Text(label.Split("###")[0]);
         }
     }
 }
