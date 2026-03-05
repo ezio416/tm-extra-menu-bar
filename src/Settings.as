@@ -11,6 +11,9 @@ int S_PositionY = 0;
 [Setting category="Main items" name="FPS"]
 bool S_FPS = true;
 
+[Setting category="Main items" name="Clock"]
+bool S_Clock = true;
+
 
 [Setting category="Debug" name="Always show"]
 bool S_DebugAlwaysShow = false;

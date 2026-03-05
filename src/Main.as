@@ -3,9 +3,11 @@ const string  pluginIcon  = Icons::Heartbeat;
 Meta::Plugin@ pluginMeta  = Meta::ExecutingPlugin();
 const string  pluginTitle = pluginColor + pluginIcon + "\\$G " + pluginMeta.Name;
 
+ExtraMenuBar::Text     clock;
 ExtraMenuBar::Text     fps;
 ExtraMenuBar::Item@[]  items;
 ExtraMenuBar::Menu     mainMenu(pluginColor + pluginIcon + "\\$G Openplanet");
+ExtraMenuBar::Checkbox mainMenuClock("Clock");
 ExtraMenuBar::Checkbox mainMenuFps("FPS");
 bool                   shown = true;
 
@@ -13,13 +15,16 @@ void Main() {
     OnSettingsChanged();
 
     mainMenu.InsertLast(mainMenuFps);
+    mainMenu.InsertLast(mainMenuClock);
     items.InsertLast(mainMenu);
 
     items.InsertLast(fps);
+    items.InsertLast(clock);
 }
 
 void OnSettingsChanged() {
     fps.enabled = mainMenuFps.state = S_FPS;
+    clock.enabled = mainMenuClock.state = S_Clock;
 }
 
 void Render() {
@@ -94,4 +99,7 @@ void Update(float) {
 
     S_FPS = fps.enabled = mainMenuFps.state;
     fps.UpdateLabel(int(Math::Round(GetApp().Viewport.AverageFps)) + " FPS");
+
+    S_Clock = clock.enabled = mainMenuClock.state;
+    clock.UpdateLabel(Time::FormatString("%X"));
 }
