@@ -59,11 +59,11 @@ void Render() {
         | UI::WindowFlags::NoTitleBar
     ;
 
-    // const float barHeight = scale * 23.5f;
+    const float barHeight = scale * 23.5f;
 
-    // if (UI::GetMousePos().y > barHeight) {
-    //     flags |= UI::WindowFlags::NoInputs;
-    // }
+    if (UI::GetMousePos().y > S_PositionY + barHeight) {
+        flags |= UI::WindowFlags::NoInputs;
+    }
 
     UI::SetNextWindowPos(0, S_PositionY, UI::Cond::Always);
     UI::SetNextWindowSize(int(Display::GetWidth() / scale) + 1, 0, UI::Cond::Always);
